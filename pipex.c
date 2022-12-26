@@ -50,17 +50,11 @@ int main(int argc, char  * argv[], char  *envp[])
     int i = 0;
     int fd1 = open(argv[1], O_RDONLY);
     if (fd1 < 0)
-    {
         write(2, "infile: No such file or directory\n", 35);
-        exit(0);
-    }
-    int fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0600);
+    int fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
             //O_TRUNC         truncate size to 0 Delets all the data in it
-    if (fd1 < 0)
-    {
-        write(2, "Error in Outfile\n", 18);
+    if (fd2 < 0)
         exit(0);
-    }
     char **paths = get_paths(envp);// "/bin/ls";
     char **cmd1 = ft_split(argv[2], ' ');
     char *path = get_cmd_path(paths, cmd1);
@@ -71,6 +65,7 @@ int main(int argc, char  * argv[], char  *envp[])
         close(fd[1]);
         exit(1);
     }
+    
     if (fork() == 0)
         get_cmd_child_1(path, cmd1, fd, fd1);
     char **cmd2 = ft_split(argv[3], ' ');

@@ -17,7 +17,7 @@ int main(int argc, char  * argv[], char  *envp[])
         if (fork() == 0)
         {
             av = ft_split(argv[i], ' ');
-            execve(av[0], av, envp);
+            execve(av[0], av, NULL);
         }
 
     }

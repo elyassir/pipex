@@ -59,12 +59,7 @@ int main(int argc, char  * argv[], char  *envp[])
     char **cmd1 = ft_split(argv[2], ' ');
     char *path = get_cmd_path(paths, cmd1);
     if (path == NULL)
-    {
         write(2, "Command Not Found\n", 18);
-        close(fd[0]);
-        close(fd[1]);
-        exit(1);
-    }
     
     if (fork() == 0)
         get_cmd_child_1(path, cmd1, fd, fd1);
@@ -72,12 +67,7 @@ int main(int argc, char  * argv[], char  *envp[])
     path = get_cmd_path(paths, cmd2);
     wait(NULL);
     if (path == NULL)
-    {
         write(2, "Command Not Found\n", 18);
-        close(fd[0]);
-        close(fd[1]);
-        exit(1);
-    }
     if (fork() == 0)
         get_cmd_child_2(path, cmd2, fd, fd2);
 

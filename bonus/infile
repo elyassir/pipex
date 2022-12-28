@@ -1,0 +1,8 @@
+total 64
+drwxr-xr-x   7 yel-mass  2019    238 Dec 28 11:04 .
+drwxr-xr-x  16 yel-mass  2019    544 Dec 27 14:30 ..
+-rwxr-xr-x   1 yel-mass  2019  13676 Dec 28 11:04 a.out
+-rw-r--r--   1 yel-mass  2019    652 Dec 28 11:02 childer.c
+-rw-r--r--   1 yel-mass  2019   2398 Dec 27 11:17 ft_split.c
+-rw-r--r--   1 yel-mass  2019   3522 Dec 28 11:04 pipex.c
+-rw-r--r--   1 yel-mass  2019    449 Dec 27 16:51 pipex.h

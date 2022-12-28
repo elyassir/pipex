@@ -1,18 +1,32 @@
 #include "pipex.h"
-char    *get_cmd_path(char **paths, char **av_2)
+#include <fcntl.h>
+
+void	get_cmd_path(char **paths, char **av_2)
 {
-    char *path;
-    av_2[0] = ft_strjoin("/", av_2[0], 1);
-    while (*paths != NULL)
-    {
-        path = ft_strjoin(*paths, av_2[0], 0);
-        if (access(path, F_OK | X_OK) == 0)
-            break;
-        paths++;
+	char	*path;
+	char	*tmp;
+	if (access(av_2[0], F_OK | X_OK) == 0)
+		return ;
+	tmp = ft_strjoin("/", av_2[0], 1);
+	free(av_2[0]);
+	av_2[0] = tmp;
+	while (*paths != NULL)
+	{
+		path = ft_strjoin(*paths, av_2[0], 0);
+		if (access(path, F_OK | X_OK) == 0)
+		    break;
+		paths++;
+		free(path);
     }
     if (*paths == NULL)
-        return (NULL);
-    return path;
+	{
+		write(2, "Command Not Found\n", 18);
+		av_2[0] = NULL;
+		return ;
+	}
+	free(av_2[0]);
+	av_2[0] = path;
+	return ;
 }
 
 int	ft_strcmp(const char *s1, const char *s2)
@@ -26,53 +40,68 @@ int	ft_strcmp(const char *s1, const char *s2)
 	b = (unsigned char *)s2;
 	while (b[i] != '\0' && a[i] != '\0' && b[i] == a[i])
 		i++;
-    if (b[i] != '\0' && a[i] != '\0' && b[i] != a[i])
-        return (a[i] - b[i]);
-    return (0);
+	if (b[i] != '\0' && a[i] != '\0' && b[i] != a[i])
+		return (a[i] - b[i]);
+	return (0);
 }
-#include <fcntl.h>
-char **get_paths(char **envp)
+
+char	**get_paths(char **envp)
 {
-    int i = 0;
-    while (envp[i] != NULL && ft_strcmp(envp[i], "PATH") != 0 )
-        i++;
-    return (ft_split(*(envp  + i) + 5, ':'));
+	int i = 0;
+	while (envp[i] != NULL && ft_strcmp(envp[i], "PATH") != 0 )
+		i++;
+	return (ft_split(*(envp  + i) + 5, ':'));
 }
+
+void	error_and_exit(char *str)
+{
+	write(1, str, ft_strlen(str));
+	exit(1);
+}
+
+void	ft_open(t_pipex *pipex, char *name, int a)
+{
+	if (a == 1)
+	{
+		pipex->infile = open(name, O_RDONLY);
+		if (pipex->infile < 0)
+			write(2, "infile: No such file or directory\n", 35);
+	}
+	else if (a == 2)
+	{
+		pipex->outfile = open(name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+		if (pipex->outfile < 0)
+			error_and_exit("Error Open Outfile");
+	}
+}
+
 int main(int argc, char  * argv[], char  *envp[])
 {
-    if (argc != 5)
-    {
-        write(2, "5 Args\n", 7);
-        return (0);
-    }
-    int fd[2];
-    pipe(fd);
-    int i = 0;
-    int fd1 = open(argv[1], O_RDONLY);
-    if (fd1 < 0)
-        write(2, "infile: No such file or directory\n", 35);
-    int fd2 = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-            //O_TRUNC         truncate size to 0 Delets all the data in it
-    if (fd2 < 0)
-        exit(0);
-    char **paths = get_paths(envp);// "/bin/ls";
-    char **cmd1 = ft_split(argv[2], ' ');
-    char *path = get_cmd_path(paths, cmd1);
-    if (path == NULL)
-        write(2, "Command Not Found\n", 18);
-    
-    if (fork() == 0)
-        get_cmd_child_1(path, cmd1, fd, fd1);
-    char **cmd2 = ft_split(argv[3], ' ');
-    path = get_cmd_path(paths, cmd2);
-    wait(NULL);
-    if (path == NULL)
-        write(2, "Command Not Found\n", 18);
-    if (fork() == 0)
-        get_cmd_child_2(path, cmd2, fd, fd2);
+	t_pipex pipex;
+	if (argc == 5)
+	{
+		pipex.all_paths = get_paths(envp);
+		pipe(pipex.pipe);
+	
 
-    close(fd[0]);
-    close(fd[1]);
-    wait(NULL);
-    return 0;
+		ft_open(&pipex, argv[1], 1);
+		pipex.cmd1 = ft_split(argv[2], ' ');
+		get_cmd_path(pipex.all_paths, pipex.cmd1);
+		if (pipex.cmd1[0] != NULL && !(pipex.infile < 0) && fork() == 0)
+			get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile);
+		close(pipex.pipe[1]);
+		wait(NULL);
+
+		ft_open(&pipex, argv[4], 2);
+
+		pipex.cmd2 = ft_split(argv[3], ' ');
+		get_cmd_path(pipex.all_paths, pipex.cmd2);
+		if (pipex.cmd2[0] != NULL && !(pipex.outfile < 0) && fork() == 0 )
+			get_cmd_child_2(pipex.cmd2, pipex.pipe, pipex.outfile);
+		close(pipex.pipe[0]);
+		wait(NULL);
+	}
+	else
+		write(2, "5 Args\n", 7); 
+	return 0;
 }

@@ -40,16 +40,16 @@ char **get_paths(char **envp)
 }
 int main(int argc, char  * argv[], char  *envp[])
 {
-    int fd[2]; // for pipe
-    int infile;    
-    int outfile;
-    char **paths;   // path=/bin:/local/bin....
-    char    *path;  // ex : /bin/ls 
-    char **cmd1;
+	int fd[2]; // for pipe
+	int	 infile;
+	int outfile;
+	char **paths;   // path=/bin:/local/bin....
+	char    *path;  // ex : /bin/ls 
+	char **cmd1;
     char **cmd2;
     char **cmd;
 
-    if (argc >= 1)
+    if (argc >= 5)
     {
         pipe(fd);
         infile = open(argv[1], O_RDONLY);

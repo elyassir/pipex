@@ -125,7 +125,7 @@ char	**ft_split(char const *s, char c)
 	words[m] = 0;
 	return (words);
 }
-char	*ft_strjoin(char const *s1, char const *s2, int a)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		len_s1;
 	int		len_s2;

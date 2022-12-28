@@ -14,7 +14,7 @@
 #include <stdio.h>
 int main(int argc, char  * argv[], char  *envp[])
 {
-    argv++;
+    //argv++;
     // while (*argv)
     // {
     //     printf("%s\n", *argv);

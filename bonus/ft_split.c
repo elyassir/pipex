@@ -125,7 +125,7 @@ char	**ft_split(char const *s, char c)
 	words[m] = 0;
 	return (words);
 }
-char	*ft_strjoin(char const *s1, char const *s2, int a)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		len_s1;
 	int		len_s2;
@@ -135,8 +135,6 @@ char	*ft_strjoin(char const *s1, char const *s2, int a)
 
 	i = -1;
 	j = 0;
-	if (!s1 || !s2)
-		return (NULL);
 	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
 	new_string = malloc((len_s1 + len_s2 + 1) * sizeof(char ));

@@ -7,8 +7,21 @@
 #include <string.h>
 #include <stdlib.h>
 
+typedef struct s_pipex
+{
+    int     infile;
+    int     outfile;
+    char    **all_paths;
+    char    *path;
+    char    **cmd1;
+    char    **cmd2;
+	int		pipe[2];
+}t_pipex;
+
+
 char	*ft_strjoin(char const *s1, char const *s2, int a);
 char		**ft_split(char const *s, char c);
-void    get_cmd_child_1(char *path,char **av_2, int *fd, int infile);
-void    get_cmd_child_2(char *path,char **av_2, int *fd, int outfile);
+void    get_cmd_child_1(char **cmd, int *fd, int infile);
+void    get_cmd_child_2(char **cmd, int *fd, int outfile);
+int	ft_strlen(const char *s);
 #endif

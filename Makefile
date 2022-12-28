@@ -1,5 +1,5 @@
 NAME = pipex
-SRCS = ft_split.c childer.c pipex.c
+SRCS = ft_split.c childer.c pipex.c utils.c
 BSRCS = bonus/childer.c bonus/ft_split.c bonus/pipex.c
 CC = cc
 CFLAGS = -Wall -Wextra -Werror

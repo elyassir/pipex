@@ -14,38 +14,40 @@
 
 void	ft_free_all_(char **strs)
 {
-	while (*strs != NULL)
+	int i = 0;
+	while (strs[i] != NULL)
 	{
-		free(*strs);
-		strs++;
+		free(strs[i]);
+		i++;
 	}
 	free(strs);
+	strs = NULL;
 }
-void	free_all_(t_pipex *pipex, int i)
+
+void	free_all_(t_pipex *pipex)
 {
-	if (i == 2)
+	if (pipex->cmd2 != NULL)
 		ft_free_all_(pipex->cmd2);
 	if (pipex->cmd1 != NULL)
 		ft_free_all_(pipex->cmd1);
+	if (pipex->all_paths != NULL)
+		ft_free_all_(pipex->all_paths);
 }
 
 void	get_cmd_child_1(char **cmd, int *fd, int infile, t_pipex *pipex)
 {
 	int l;
+
 	l = fork();
 	if (l == 0)
 	{
 		dup2(fd[1], STDOUT_FILENO);
 		dup2(infile, STDIN_FILENO);
 		execve(cmd[0], cmd, pipex->envp);
-		free_all_(pipex, 1);
-		error_and_exit("execve Error");
+		error_and_exit("execve Error", pipex);
 	}
 	if (l < 0)
-	{
-		free_all_(pipex, 1);
-		error_and_exit("fork Error");
-	}
+		error_and_exit("fork Error", pipex);
 }
 
 void	get_cmd_child_2(char **cmd, int *fd, int outfile, t_pipex *pipex)
@@ -58,12 +60,8 @@ void	get_cmd_child_2(char **cmd, int *fd, int outfile, t_pipex *pipex)
 		dup2(fd[0], STDIN_FILENO);
 		dup2(outfile, STDOUT_FILENO);
 		execve(cmd[0], cmd, pipex->envp);
-		free_all_(pipex, 2);
-		error_and_exit("execve Error");
+		error_and_exit("execve Error", pipex);
 	}
 	if (l < 0)
-	{
-		free_all_(pipex, 2);
-		error_and_exit("fork Error");
-	}
+		error_and_exit("fork Error", pipex);
 }

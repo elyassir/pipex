@@ -10,10 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 static int	count_words(char const *s, char c)
 {

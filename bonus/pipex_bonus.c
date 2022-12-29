@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 #include <fcntl.h>
 
 void	get_cmd_path(char **paths, char **av_2)
@@ -54,13 +54,20 @@ int	ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
-char	**get_paths(char **envp)
+char	**get_paths(char **envp, t_pipex *pipex)
 {
 	int	i;
 
 	i = 0;
+	pipex->envp = envp;
+	pipex->all_paths = NULL;
+	pipex->cmd = NULL;
+	pipex->cmd1 = NULL;
+	pipex->cmd2 = NULL;
 	while (envp[i] != NULL && ft_strcmp(envp[i], "PATH") != 0)
 		i++;
+	if (envp[i] == NULL)
+		return (NULL);
 	return (ft_split(envp[i] + 5, ':'));
 }
 
@@ -76,7 +83,7 @@ void	ft_open(t_pipex *pipex, char *name, int a)
 	{
 		pipex->outfile = open(name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 		if (pipex->outfile < 0)
-			error_and_exit("Error Open Outfile");
+			error_and_exit("Error Open Outfile", pipex);
 	}
 }
 
@@ -85,11 +92,12 @@ void	ft_child_child(t_pipex *pipex, char **argv, int argc)
 	int i = 2;
 	while (++i < argc - 2) 
 	{
-		pipe(pipex->pipe2);
+		if (pipe(pipex->pipe2) == -1)
+			error_and_exit("Pipe Error", pipex);
 		pipex->cmd = ft_split(argv[i], ' ');
 		get_cmd_path(pipex->all_paths, pipex->cmd);
-		if (pipex->cmd[0] != NULL && fork() == 0)
-			get_cmd_child_2(pipex->cmd, pipex->pipe, pipex->pipe2);
+		if (pipex->cmd != NULL && pipex->cmd[0] != NULL)
+			get_cmd_child_2(pipex->cmd, pipex->pipe, pipex->pipe2, pipex);
 		wait(NULL);
 		*pipex->pipe = *pipex->pipe2;
 		close(pipex->pipe2[1]);
@@ -103,21 +111,22 @@ int	main(int argc, char *argv[], char *envp[])
 
 	if (argc >= 5)
 	{
-		pipex.all_paths = get_paths(envp);
-		pipe(pipex.pipe);
+		pipex.all_paths = get_paths(envp, &pipex);
+		if (pipe(pipex.pipe) == -1)
+			error_and_exit("Pipe Error ", &pipex);
 		ft_open(&pipex, argv[1], 1);
 		pipex.cmd1 = ft_split(argv[2], ' ');
 		get_cmd_path(pipex.all_paths, pipex.cmd1);
-		if (pipex.cmd1[0] != NULL && !(pipex.infile < 0))
-			get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile);
+		if (pipex.cmd1 != NULL && pipex.cmd1[0] != NULL && !(pipex.infile < 0))
+			get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
 		close(pipex.pipe[1]);
 		wait(NULL);
 		ft_child_child(&pipex, argv, argc);
 		ft_open(&pipex, argv[argc - 1], 2);
 		pipex.cmd2 = ft_split(argv[argc - 2], ' ');
 		get_cmd_path(pipex.all_paths, pipex.cmd2);
-		if (pipex.cmd2[0] != NULL && !(pipex.outfile < 0))
-			get_cmd_child_3(pipex.cmd2, pipex.pipe, pipex.outfile);
+		if (pipex.cmd2 != NULL && pipex.cmd2[0] != NULL && !(pipex.outfile < 0))
+			get_cmd_child_3(pipex.cmd2, pipex.pipe, pipex.outfile, &pipex);
 	}
 	else
 		write(2, "5 Args\n", 7);

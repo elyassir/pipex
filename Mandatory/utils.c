@@ -12,9 +12,10 @@
 
 #include "pipex.h"
 
-void	error_and_exit(char *str)
+void	error_and_exit(char *str, t_pipex *pipex)
 {
 	write(1, str, ft_strlen(str));
+	free_all_(pipex);
 	exit(1);
 }
 

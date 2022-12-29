@@ -23,7 +23,7 @@ static int	count_words(char const *s, char c)
 	i = 0;
 	count = 0;
 	if (!s)
-		return (0);
+		return (-1);
 	while (s[i])
 	{
 		while (s[i] == c)
@@ -66,10 +66,10 @@ char	**ft_split(char const *s, char c)
 	int		len_word;
 
 	count = count_words(s, c);
-	words = malloc((count + 1) * sizeof(char *));
 	index = 0;
 	m = 0;
-	if (!words)
+	words = malloc((count + 1) * sizeof(char *));
+	if (!words || s == NULL)
 		return (NULL);
 	while (m < count)
 	{

@@ -10,33 +10,49 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-void	get_cmd_child_1(char **cmd, int *fd, int infile)
+void	ft_free_all_(char **strs)
 {
-	int k;
+	int i = 0;
+	while (strs[i] != NULL)
+	{
+		free(strs[i]);
+		i++;
+	}
+	free(strs);
+	strs = NULL;
+}
+
+void	free_all_(t_pipex *pipex)
+{
+	if (pipex->cmd2 != NULL)
+		ft_free_all_(pipex->cmd2);
+	if (pipex->cmd1 != NULL)
+		ft_free_all_(pipex->cmd1);
+	if (pipex->all_paths != NULL)
+		ft_free_all_(pipex->all_paths);
+	if (pipex->cmd != NULL)
+		ft_free_all_(pipex->cmd);
+}
+void	get_cmd_child_1(char **cmd, int *fd, int infile, t_pipex *pipex)
+{
 	int l;
 	
 	l = fork();
 	if (l < 0)
-	{
-		error_and_exit("Fork Error");
-	}
+		error_and_exit("Fork Error", pipex);
 	if (l == 0)
 	{
 		dup2(fd[1], STDOUT_FILENO);
 		dup2(infile, STDIN_FILENO);
-		k = execve(cmd[0], cmd, NULL);
-		if (k < 0)
-		{
-			error_and_exit("execve Error");
-		}
+		execve(cmd[0], cmd, pipex->envp);
+		error_and_exit("execve Error", pipex);
 	}
 }
 
-void	get_cmd_child_2(char **cmd, int *fd, int *fd2)
+void	get_cmd_child_2(char **cmd, int *fd, int *fd2, t_pipex *pipex)
 {
-	int k;
 	int l;
 	
 	l = fork();
@@ -45,31 +61,25 @@ void	get_cmd_child_2(char **cmd, int *fd, int *fd2)
 	{
 		dup2(fd[0], 0);
 		dup2(fd2[1], 1);
-		k = execve(cmd[0], cmd, NULL);
+		execve(cmd[0], cmd, pipex->envp);
+		error_and_exit("execve Error", pipex);
 	}
 	if (l < 0)
-	// free_parent();
-	error_and_exit("execve Error");
+		error_and_exit("execve Error", pipex);
 }
 
-void	get_cmd_child_3(char **cmd, int *fd, int outfile)
+void	get_cmd_child_3(char **cmd, int *fd, int outfile, t_pipex *pipex)
 {
-	int k;
 	int l;
 	
 	l = fork();
 	if (l < 0)
-	{
-		error_and_exit("Fork Error");
-	}
+		error_and_exit("Fork Error", pipex);
 	if (l == 0)
 	{
 		dup2(fd[0], STDIN_FILENO);
 		dup2(outfile, STDOUT_FILENO);
-		k = execve(cmd[0], cmd, NULL);
-		if (k < 0)
-		{
-			error_and_exit("execve Error");
-		}
+		execve(cmd[0], cmd, pipex->envp);
+		error_and_exit("execve Error", pipex);
 	}
 }

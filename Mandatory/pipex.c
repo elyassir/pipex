@@ -27,18 +27,17 @@ void	get_cmd_path(char **paths, char **av_2)
 	{
 		path = ft_strjoin(*paths, av_2[0]);
 		if (access(path, F_OK | X_OK) == 0)
-			break ;
+		{
+			free(av_2[0]);
+			av_2[0] = path;
+			return ;
+		}
 		paths++;
 		free(path);
 	}
-	if (*paths == NULL)
-	{
-		write(2, "Command Not Found\n", 18);
-		av_2[0] = NULL;
-		return ;
-	}
+	write(2, "Command Not Found\n", 18);
 	free(av_2[0]);
-	av_2[0] = path;
+	av_2[0] = NULL;
 	return ;
 }
 
@@ -63,9 +62,14 @@ char	**get_paths(char **envp, t_pipex *pipex)
 	int	i;
 
 	i = 0;
+	pipex->all_paths = NULL;
+	pipex->cmd1 = NULL;
+	pipex->cmd2 = NULL;
 	pipex->envp = envp;
 	while (envp[i] != NULL && ft_strcmp(envp[i], "PATH") != 0)
 		i++;
+	if (envp[i] == NULL)
+		return (NULL);
 	return (ft_split(envp[i] + 5, ':'));
 }
 
@@ -75,35 +79,36 @@ void	ft_open(t_pipex *pipex, char *name, int a)
 	{
 		pipex->infile = open(name, O_RDONLY);
 		if (pipex->infile < 0)
-			write(2, "infile: No such file or directory\n", 35);
+			write(2, "No such file or directory\n", 27);
 	}
 	else if (a == 2)
 	{
 		pipex->outfile = open(name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 		if (pipex->outfile < 0)
-			error_and_exit("Error Open Outfile");
+			error_and_exit("Error Open Outfile", pipex);
 	}
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	pipex;
-	(void)argv;
+
 	if (argc == 5)
 	{
 		pipex.all_paths = get_paths(envp, &pipex);
-		pipe(pipex.pipe);
+		if (pipe(pipex.pipe) == -1)
+			error_and_exit("Pipe Error", &pipex);
 		ft_open(&pipex, argv[1], 1);
-		pipex.cmd1 = ft_split(argv[2], ' '); 
+		pipex.cmd1 = ft_split(argv[2], ' ');
 		get_cmd_path(pipex.all_paths, pipex.cmd1);
-		if (pipex.cmd1[0] != NULL && !(pipex.infile < 0) && fork() == 0)
-			get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
-		wait(NULL);
+		if (pipex.cmd1 != NULL && pipex.cmd1[0] != NULL && !(pipex.infile < 0))
+		 	get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
 		close(pipex.pipe[1]);
+		wait(NULL);
 		ft_open(&pipex, argv[4], 2);
 		pipex.cmd2 = ft_split(argv[3], ' ');
 		get_cmd_path(pipex.all_paths, pipex.cmd2);
-		if (pipex.cmd2[0] != NULL && !(pipex.outfile < 0) && fork() == 0)
+		if (pipex.cmd2 != NULL && pipex.cmd2[0] != NULL && !(pipex.outfile < 0))
 			get_cmd_child_2(pipex.cmd2, pipex.pipe, pipex.outfile, &pipex);
 	}
 	else

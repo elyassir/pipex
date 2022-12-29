@@ -22,19 +22,21 @@ typedef struct s_pipex
 	int		infile;
 	int		outfile;
 	char	**all_paths;
-	char	*path;
 	char	**cmd1;
 	char	**cmd2;
+	char	**envp;
 	int		pipe[2];
+	int		pipe2[2];
 }t_pipex;
 
-char	*ft_strjoin(char const *s1, char const *s2, int a);
+char	*ft_strjoin(char const *s1, char const *s2);
 char	**ft_split(char const *s, char c);
-void	get_cmd_child_1(char **cmd, int *fd, int infile);
-void	get_cmd_child_2(char **cmd, int *fd, int outfile);
+void	get_cmd_child_1(char **cmd, int *fd, int infile, t_pipex *pipex);
+void	get_cmd_child_2(char **cmd, int *fd, int outfile, t_pipex *pipex);
 int		ft_strlen(const char *s);
 void	error_and_exit(char *str);
 char	*ft_strdup(const char *s1);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+void	free_all_(t_pipex *pipex, int i);
 
 #endif

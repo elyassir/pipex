@@ -1,6 +1,6 @@
 NAME = pipex
-SRCS = ft_split.c childer.c pipex.c utils.c
-BSRCS = bonus/childer.c bonus/ft_split.c bonus/pipex.c
+SRCS = Mandatory/ft_split.c Mandatory/childer.c Mandatory/pipex.c Mandatory/utils.c
+BSRCS = bonus/childer.c bonus/ft_split.c bonus/pipex.c bonus/utils.c
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 OBJS = $(SRCS:.c=.o)

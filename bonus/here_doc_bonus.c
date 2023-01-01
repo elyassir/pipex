@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/01 08:09:29 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 09:55:37 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 10:22:05 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	ft_here_doc(t_pipex *pipex, char **argv, int argc, char **envp)
 	get_cmd_path(pipex->all_paths, pipex->cmd2);
 	if (pipex->cmd2 != NULL && pipex->cmd2[0] != NULL && !(pipex->outfile < 0))
 		get_cmd_child_3(pipex->cmd2, pipex->pipe, pipex->outfile, pipex);
+	wait(NULL);
 }
 
 void	here_doc(int argc, char **argv, char **envp, t_pipex *pipex)

@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 09:54:29 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 10:21:26 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ int	main(int argc, char *argv[], char *envp[])
 		get_cmd_path(pipex.all_paths, pipex.cmd2);
 		if (pipex.cmd2 != NULL && pipex.cmd2[0] != NULL && !(pipex.outfile < 0))
 			get_cmd_child_2(pipex.cmd2, pipex.pipe, pipex.outfile, &pipex);
+		wait(NULL);
 	}
 	else
 		write(2, "5 Args\n", 7);

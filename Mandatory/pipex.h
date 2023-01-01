@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-mass <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:32:42 by yel-mass          #+#    #+#             */
-/*   Updated: 2022/12/28 14:32:54 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 08:17:46 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 # include <stdlib.h>
+# include <fcntl.h>
 
 typedef struct s_pipex
 {

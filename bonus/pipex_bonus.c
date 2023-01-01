@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-mass <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2022/12/28 16:40:46 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 09:28:58 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	get_cmd_path(char **paths, char **av_2)
 	char	*path;
 	char	*tmp;
 
-	if (access(av_2[0], F_OK | X_OK) == 0)
+	if (av_2 == NULL || paths == NULL || access(av_2[0], F_OK | X_OK) == 0)
 		return ;
 	tmp = ft_strjoin("/", av_2[0]);
 	free(av_2[0]);
@@ -27,31 +27,18 @@ void	get_cmd_path(char **paths, char **av_2)
 	{
 		path = ft_strjoin(*paths, av_2[0]);
 		if (access(path, F_OK | X_OK) == 0)
-			break ;
+		{
+			free(av_2[0]);
+			av_2[0] = path;
+			return ;
+		}
 		paths++;
 		free(path);
 	}
-	if (*paths == NULL)
-	{
-		write(2, "Command Not Found\n", 18);
-		av_2[0] = NULL;
-		return ;
-	}
+	write(2, "Command Not Found\n", 18);
 	free(av_2[0]);
-	av_2[0] = path;
+	av_2[0] = NULL;
 	return ;
-}
-
-int	ft_strcmp(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	while (s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
-		i++;
-	if (s1[i] != '\0' && s2[i] != '\0' && s1[i] != s2[i])
-		return (s2[i] - s1[i]);
-	return (0);
 }
 
 char	**get_paths(char **envp, t_pipex *pipex)
@@ -87,10 +74,12 @@ void	ft_open(t_pipex *pipex, char *name, int a)
 	}
 }
 
-void	ft_child_child(t_pipex *pipex, char **argv, int argc)
+static void	ft_child_child(t_pipex *pipex, char **argv, int argc)
 {
-	int i = 2;
-	while (++i < argc - 2) 
+	int	i;
+
+	i = 2;
+	while (++i < argc - 2)
 	{
 		if (pipe(pipex->pipe2) == -1)
 			error_and_exit("Pipe Error", pipex);
@@ -101,7 +90,7 @@ void	ft_child_child(t_pipex *pipex, char **argv, int argc)
 		wait(NULL);
 		*pipex->pipe = *pipex->pipe2;
 		close(pipex->pipe2[1]);
-		free(pipex->cmd[0]);
+		ft_free_all_(pipex->cmd);
 	}
 }
 
@@ -109,7 +98,9 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	pipex;
 
-	if (argc >= 5)
+	if (argc == 6 && ft_strcmp(argv[1], "here_doc") == 0)
+		here_doc(argc, argv, envp, &pipex);
+	else if (argc >= 5)
 	{
 		pipex.all_paths = get_paths(envp, &pipex);
 		if (pipe(pipex.pipe) == -1)

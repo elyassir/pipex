@@ -6,7 +6,7 @@
 /*   By: yel-mass <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:28:29 by yel-mass          #+#    #+#             */
-/*   Updated: 2022/12/28 16:34:14 by yel-mass         ###   ########.fr       */
+/*   Updated: 2022/12/29 10:45:21 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	ft_free_all_(char **strs)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (strs[i] != NULL)
 	{
 		free(strs[i]);
@@ -35,10 +37,11 @@ void	free_all_(t_pipex *pipex)
 	if (pipex->cmd != NULL)
 		ft_free_all_(pipex->cmd);
 }
+
 void	get_cmd_child_1(char **cmd, int *fd, int infile, t_pipex *pipex)
 {
-	int l;
-	
+	int	l;
+
 	l = fork();
 	if (l < 0)
 		error_and_exit("Fork Error", pipex);
@@ -53,10 +56,9 @@ void	get_cmd_child_1(char **cmd, int *fd, int infile, t_pipex *pipex)
 
 void	get_cmd_child_2(char **cmd, int *fd, int *fd2, t_pipex *pipex)
 {
-	int l;
-	
-	l = fork();
+	int	l;
 
+	l = fork();
 	if (l == 0)
 	{
 		dup2(fd[0], 0);
@@ -70,8 +72,8 @@ void	get_cmd_child_2(char **cmd, int *fd, int *fd2, t_pipex *pipex)
 
 void	get_cmd_child_3(char **cmd, int *fd, int outfile, t_pipex *pipex)
 {
-	int l;
-	
+	int	l;
+
 	l = fork();
 	if (l < 0)
 		error_and_exit("Fork Error", pipex);

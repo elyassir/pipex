@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   ft_split_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-mass <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:26:13 by yel-mass          #+#    #+#             */
-/*   Updated: 2022/12/28 16:33:20 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 08:54:33 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	get_len_word(char const *s, char c, int *index, int *len_word)
 		*len_word += 1;
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char *s, char c)
 {
 	int		count;
 	char	**words;
@@ -81,7 +81,7 @@ char	**ft_split(char const *s, char c)
 	return (words);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	int		len_s1;
 	int		len_s2;

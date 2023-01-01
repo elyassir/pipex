@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-mass <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2022/12/28 16:49:40 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 08:29:28 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <fcntl.h>
 
 void	get_cmd_path(char **paths, char **av_2)
 {
@@ -50,6 +49,9 @@ int	ft_strcmp(const char *s1, const char *s2)
 	i = 0;
 	a = (unsigned char *)s1;
 	b = (unsigned char *)s2;
+	if (s1 == NULL || s2 == NULL)
+		return (0);
+
 	while (b[i] != '\0' && a[i] != '\0' && b[i] == a[i])
 		i++;
 	if (b[i] != '\0' && a[i] != '\0' && b[i] != a[i])
@@ -102,7 +104,7 @@ int	main(int argc, char *argv[], char *envp[])
 		pipex.cmd1 = ft_split(argv[2], ' ');
 		get_cmd_path(pipex.all_paths, pipex.cmd1);
 		if (pipex.cmd1 != NULL && pipex.cmd1[0] != NULL && !(pipex.infile < 0))
-		 	get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
+			get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
 		close(pipex.pipe[1]);
 		wait(NULL);
 		ft_open(&pipex, argv[4], 2);

@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 08:29:28 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 09:54:29 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 	b = (unsigned char *)s2;
 	if (s1 == NULL || s2 == NULL)
 		return (0);
-
 	while (b[i] != '\0' && a[i] != '\0' && b[i] == a[i])
 		i++;
 	if (b[i] != '\0' && a[i] != '\0' && b[i] != a[i])

@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/01 08:09:29 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 09:28:31 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 09:55:37 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	here_doc(int argc, char **argv, char **envp, t_pipex *pipex)
 	tmp = open("tmp_file", O_WRONLY | O_CREAT, 0644);
 	while (1)
 	{
-		line = get_next_line(0);	
+		line = get_next_line(0);
 		if (ft_strcmp(line, argv[2]) == 0)
 		{
 			free(line);
@@ -72,4 +72,5 @@ void	here_doc(int argc, char **argv, char **envp, t_pipex *pipex)
 	}
 	close(tmp);
 	ft_here_doc(pipex, argv, argc, envp);
+	exit(0);
 }

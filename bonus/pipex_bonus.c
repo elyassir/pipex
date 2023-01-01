@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 09:28:58 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 09:55:48 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,28 +98,25 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	pipex;
 
+	if (argc < 5)
+		write(2, "5 Args\n", 7);
 	if (argc == 6 && ft_strcmp(argv[1], "here_doc") == 0)
 		here_doc(argc, argv, envp, &pipex);
-	else if (argc >= 5)
-	{
-		pipex.all_paths = get_paths(envp, &pipex);
-		if (pipe(pipex.pipe) == -1)
-			error_and_exit("Pipe Error ", &pipex);
-		ft_open(&pipex, argv[1], 1);
-		pipex.cmd1 = ft_split(argv[2], ' ');
-		get_cmd_path(pipex.all_paths, pipex.cmd1);
-		if (pipex.cmd1 != NULL && pipex.cmd1[0] != NULL && !(pipex.infile < 0))
-			get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
-		close(pipex.pipe[1]);
-		wait(NULL);
-		ft_child_child(&pipex, argv, argc);
-		ft_open(&pipex, argv[argc - 1], 2);
-		pipex.cmd2 = ft_split(argv[argc - 2], ' ');
-		get_cmd_path(pipex.all_paths, pipex.cmd2);
-		if (pipex.cmd2 != NULL && pipex.cmd2[0] != NULL && !(pipex.outfile < 0))
-			get_cmd_child_3(pipex.cmd2, pipex.pipe, pipex.outfile, &pipex);
-	}
-	else
-		write(2, "5 Args\n", 7);
+	pipex.all_paths = get_paths(envp, &pipex);
+	if (pipe(pipex.pipe) == -1)
+		error_and_exit("Pipe Error ", &pipex);
+	ft_open(&pipex, argv[1], 1);
+	pipex.cmd1 = ft_split(argv[2], ' ');
+	get_cmd_path(pipex.all_paths, pipex.cmd1);
+	if (pipex.cmd1 != NULL && pipex.cmd1[0] != NULL && !(pipex.infile < 0))
+		get_cmd_child_1(pipex.cmd1, pipex.pipe, pipex.infile, &pipex);
+	close(pipex.pipe[1]);
+	wait(NULL);
+	ft_child_child(&pipex, argv, argc);
+	ft_open(&pipex, argv[argc - 1], 2);
+	pipex.cmd2 = ft_split(argv[argc - 2], ' ');
+	get_cmd_path(pipex.all_paths, pipex.cmd2);
+	if (pipex.cmd2 != NULL && pipex.cmd2[0] != NULL && !(pipex.outfile < 0))
+		get_cmd_child_3(pipex.cmd2, pipex.pipe, pipex.outfile, &pipex);
 	return (0);
 }

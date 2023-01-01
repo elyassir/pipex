@@ -6,14 +6,13 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 20:03:54 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 08:54:39 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/01 09:52:28 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-int		ft_strlen(char *s)
+int	ft_strlen(char *s)
 {
 	int	len;
 

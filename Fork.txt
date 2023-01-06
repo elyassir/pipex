@@ -1,0 +1,29 @@
+fork() in C
+
+Fork system call is used for creating a new process, which is called child process, which runs concurrently with the process that makes the fork() call (parent process). After a new child process is created, both processes will execute the next instruction following the fork() system call
+
+ A child process uses the same pc(program counter), same CPU registers, same open files which use in the parent process.
+Negative Value: creation of a child process was unsuccessful.
+Zero: Returned to the newly created child process.
+Positive value: Returned to parent or caller. The value contains process ID of newly created child process.
+
+The number of times ‘hello’ is printed is equal to number of process created. Total Number of Processes = 2power(n)
+
+
+fork ();   // Line 1
+fork ();   // Line 2
+fork ();   // Line 3
+
+       L1       // There will be 1 child process 
+    /     \     // created by line 1.
+  L2      L2    // There will be 2 child processes
+ /  \    /  \   //  created by line 2
+L3  L3  L3  L3  // There will be 4 child processes 
+                // created by line 3
+So there are total eight processes (new child processes and one original process).
+
+Here, two outputs are possible because the parent process and child process are running concurrently. So we don’t know whether the OS will first give control to the parent process or the child process.
+
+Important: Parent process and child process are running the same program, but it does not mean they are identical. OS allocate different data and states for these two processes, and the control flow of these processes can be different. 
+
+The fork system call creates a new process. The new process created by fork() is a copy of the current process except for the returned value. The exec() system call replaces the current process with a new program.

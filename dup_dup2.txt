@@ -1,0 +1,38 @@
+dup() and dup2() Linux system call
+
+The dup() system call creates a copy of a file descriptor.
+It uses the lowest-numbered unused descriptor for the new descriptor.
+If the copy is successfully created, then the original and copy file descriptors refer to the same open file description.
+
+
+int dup(int oldfd);
+oldfd: old file descriptor whose copy is to be created.
+exemple : 
+    int file_desc = open("dup.txt", O_WRONLY | O_APPEND);
+    int copy_desc = dup(file_desc);
+
+    write(copy_desc,"This will be output to the file named dup.txt\n", 46);
+    write(file_desc,"This will also be output to the file named dup.txt\n", 51);
+
+
+dup2()
+
+The dup2() system call is similar to dup() but the basic difference between them is that instead of using the lowest-numbered unused file descriptor, it uses the descriptor number specified by the user.
+
+int dup2(int oldfd, int newfd);
+oldfd: old file descriptor
+newfd new file descriptor which is used by dup2() to create a copy. // Y3ni daba (fd[0], 0) => ghadi tht lik a copy of fd[0] in 0 f tableu dyal fds.
+
+
+If the descriptor newfd was previously open, it is silently closed before being reused. !! y3ni hiya katsd lik stdin l9dim o katht blasto wahd copy mn fd 0 dyal pipe.
+If oldfd is a valid file descriptor, and newfd has the same value as oldfd, then dup2() does nothing, and returns newfd.
+
+
+A tricky use of dup2() system call: As in dup2(), in place of newfd any file descriptor can be put. Below is a C implementation in which the file descriptor of Standard output (stdout) is used. This will lead all the printf() statements to be written in the file referred by the old file descriptor.
+you cant do this by using dup *.
+
+
+and thus share file offset and file status flags; for example, if the file offset is modified by using lseek(2) on one of the descriptors, the offset is also changed for the other.
+
+On  success, these system calls return the new file descriptor.  On error, -1 is returned,
+       and errno is set appropriately.

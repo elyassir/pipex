@@ -1,0 +1,194 @@
+The unlink() function shall remove a link to a file. If path names a symbolic link, unlink() shall remove the symbolic link named by path and shall not affect any file or directory named by the contents of the symbolic link. Otherwise, unlink() shall remove the link named by the pathname pointed to by path and shall decrement the link count of the file referenced by the link.
+
+When the file's link count becomes 0 and no process has the file open, the space occupied by the file shall be freed and the file shall no longer be accessible. If one or more processes have the file open when the last link is removed, the link shall be removed before unlink() returns, but the removal of the file contents shall be postponed until all references to the file are closed.
+
+
+The unlink command is used to remove a file. However, it can only remove a file if you have permission to do so. If you do not have permission to delete a particular file, then unlink will not be able to remove it. Also, some system files may not be deleted using unlink because they are needed for the system to function properly.
+
+For example, you can use unlink to delete a file that you have created in your home directory:
+
+Copy code
+unlink file.txt
+However, you will not be able to use unlink to delete a system file such as /bin/ls, because it is a critical system file that is needed for the system to function.
+
+Keep in mind that once a file is deleted using unlink, it is generally not possible to recover it. Be sure to use this command with caution.
+
+
+
+
+
+The parent process ID (PPID) of a process is the process ID of the process that created it. When a new process is created, it is given a unique process ID and its parent process is given the PPID.
+
+The PPID of a process does not change during the lifetime of the process, because the process that created it remains the same. The PPID is inherited by the child process when it is created and remains unchanged throughout the lifetime of the child process.
+
+On the other hand, the process ID (PID) of a process can change every time the process is run. This is because the operating system assigns a new, unique PID to each process when it is created. When a process finishes executing and is terminated, the operating system may reuse the PID for a new process at some point in the future. This means that the PID of a process may be different each time the process is run.
+
+
+all process of a different programs has the same parent process id ppid 
+
+
+
+
+
+
+
+
+
+When a program is executed...
+process that does exec can pass command-line arguments to
+the new program
+this is part of the UNIX system shells
+
+
+Environment List
+each program also passed an environment list
+this list is an array of char pointers, with each pointer
+containing the address of a null-terminated C string
+the address of the array of pointers is contained in the global
+variable environ:
+extern char **environ;
+
+Note that this function returns a pointer to the value of a name=value
+string. We should always use getenv to fetch a specific value from the environment, instead of accessing environ directly.
+
+
+J.5.1 Environment arguments
+1 In a hosted environment, the main function receives a third argument, char *envp[], that points to a null-terminated array of pointers to char, each of which points to a string that provides information about the environment for this execution of the program
+
+
+
+information about the environment for this execution of the programinformation about the environment for this execution of the program
+
+
+When a child process is created via fork(2), it inherits a copy
+       of its parent's environment
+
+By convention, the strings in environ have the form "name=value".
+       The name is case-sensitive and may not contain the character "=".
+       The value can be anything that can be represented as a string
+
+
+
+
+
+
+
+
+
+
+When a child process is created using fork(), it gets a copy of the parent process's memory space. This means that the child process has its own copies of the variables and data that the parent process has. The child process and the parent process will have different memory addresses for their variables, even if the variables have the same names and values.
+
+
+
+
+To display the exit code for the last command you ran on the command line, use the following command: $ echo $?
+
+
+
+
+
+
+
+
+
+
+A process is a task that your Linux machine is currently working on. 
+For example, when you open a browser, your machine creates a process for it.
+
+
+ps gives you information about active processes. By default, it displays all processes associated with the same effective user.
+
+When a process is linked to a terminal, the process, as well as its child processes, will be terminated if the terminal is closed.
+
+To solve this problem, the process has to be completely disconnected from its controlling terminal, i.e., run in the background.
+
+If the parent process exits before the child process created with fork(), the child process will become a "zombie" process. Zombie processes are processes that have completed execution but still have an entry in the process table, taking up system resources.
+
+Normally, the parent process is responsible for cleaning up the child process and removing its entry from the process table by calling wait() or waitpid(). If the parent process exits before the child, the child process will become orphaned and will be adopted by the init process, which will clean up the child process when it terminates.
+
+It's generally a good idea to make sure that the parent process doesn't exit before the child process, to avoid creating zombie processes.
+
+
+
+
+
+
+
+
+
+
+In the C programming language, the wait function is used to wait for a child process to finish. It takes a single argument of type int * which is used to store the exit status of the child process. The wait function returns the process ID of the child process that has terminated, or -1 if there was an error.
+
+Here is an example of using the wait function in C:
+
+Copy code
+#include <sys/wait.h>
+
+int main() {
+    int status;
+    pid_t child_pid = fork();
+
+    if (child_pid == 0) {
+        // This is the child process.
+        // Do some work here.
+        return 0;
+    } else {
+        // This is the parent process.
+        // Wait for the child process to finish.
+        wait(&status);
+        // Check the exit status of the child process.
+        if (WIFEXITED(status)) {
+            printf("Child process exited with status %d\n", WEXITSTATUS(status));
+        } else {
+            printf("Child process did not exit normally\n");
+        }
+    }
+
+    return 0;
+}
+The wait function blocks the calling process until one of its child processes terminates, or until a signal is received. If multiple child processes are terminated while the wait function is blocked, it will return the process ID of one of the terminated child processes.
+
+
+
+
+Yassir El Massafi
+and what WIFEXITED and WEXITSTATUS
+WIFEXITED is a macro that tests whether a child process terminated normally, that is, whether it was terminated by a call to the exit function. It takes an int status argument that should be the exit status of the child process as returned by the wait function. If the child process terminated normally, WIFEXITED returns a non-zero value, otherwise it returns 0.
+
+WEXITSTATUS is a macro that extracts the exit status of a child process from the status argument passed to WIFEXITED. It should be called only if WIFEXITED returns a non-zero value, which indicates that the child process terminated normally. WEXITSTATUS returns an int value that is the exit status of the child process, as passed to the exit function.
+
+Here is an example of using WIFEXITED and WEXITSTATUS to check the exit status of a child process in C:
+
+Copy code
+#include <sys/wait.h>
+#include <stdio.h>
+
+int main() {
+    int status;
+    pid_t child_pid = fork();
+
+    if (child_pid == 0) {
+        // This is the child process.
+        // Do some work here.
+        return 0;
+    } else {
+        // This is the parent process.
+        // Wait for the child process to finish.
+        wait(&status);
+        // Check the exit status of the child process.
+        if (WIFEXITED(status)) {
+            printf("Child process exited with status %d\n", WEXITSTATUS(status));
+        } else {
+            printf("Child process did not exit normally\n");
+        }
+    }
+
+    return 0;
+}
+In this example, the wait function blocks the parent process until the child process terminates. When the child process terminates, the wait function stores the exit status of the child in the status variable and returns the process ID of the child. The WIFEXITED macro is then used to test whether the child process terminated normally, and if so, the WEXITSTATUS macro is used to extract the exit status of the child.
+
+
+
+
+
+

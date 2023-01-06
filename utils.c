@@ -6,16 +6,16 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:34:19 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/01 08:25:21 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/01/04 19:18:48 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <stdio.h>
 
-void	error_and_exit(char *str, t_pipex *pipex)
+void	error_and_exit(char *str)
 {
-	write(1, str, ft_strlen(str));
-	free_all_(pipex);
+	perror(str);
 	exit(1);
 }
 

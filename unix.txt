@@ -1,0 +1,32 @@
+What is Unix?
+
+The Unix operating system is a set of programs that act as a link between the computer and the user.
+
+The computer programs that allocate the system resources and coordinate all the details of the computer's internals is called the operating system or the kernel.
+
+Users communicate with the kernel through a program known as the shell
+The shell is a command line interpreter; it translates commands entered by the user and converts them into a language that is understood by the kernel.
+
+ Kernel: The kernel is the heart of the operating system. It interacts with the hardware
+and most of the tasks like memory management, task scheduling and file
+management.
+
+
+Unix environment.
+An important Unix
+concept is the environment, which is defined by environment variables. Some are set by the
+system, others by you, yet others by the shell, or any program that loads another program.
+A variable is a character string to which we assign a value. The value assigned could be a
+number, text, filename, device, or any other type of data.
+
+
+To display the values of environment variables, use the printenv command. If you specify the Name parameter, the system only prints the value associated with the variable you requested.
+
+
+
+
+
+
+
+
+respectfull person help me to find some errors thanks a lot I appreciate your time 

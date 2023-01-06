@@ -1,0 +1,101 @@
+Creating and Killing Child Processes in C
+
+
+
+What is a Process?
+The programs we write are sets of instructions and operations meant to be executed by a computer. A program and all of its files are saved on a hard drive and do nothing, per se.
+When we execute a program, whether it be with a shell command, by double-clicking an icon or automatically at startup, the system loads its instructions into RAM and executes them one after the other. A program in this state of execution is what we call a process.
+
+
+A program exists on a hard drive; a process exists in RAM.
+The operating system manages all processes and allocates a memory zone to each of them.
+Each has its own stack, its own heap, its own instruction pointer, etc
+This means that a process cannot easily access another process’ memory or instructions. Each process is therefore a distinct entity.
+
+To see all the active processes on a Unix system, we can use the following command :
+
+$ ps -e
+
+
+We can also check any process’ PID with the pidof command:
+
+But that isn’t the only PID a process has. It also receives a reference to its parent process: a PPID (Parent Process IDentifier). For example, we can check both the PID and PPID of the shell program in our terminal with the following command:
+
+$ echo "PID = $$; PPID = $PPID"
+
+
+
+ls, the shell creates a child process whose job it is to execute the ls program.
+
+
+If the shell executed the ls program directly without first creating a child, the shell process would be overwritten by the ls program and we wouldn’t be able to continue using our shell…
+
+
+
+At startup, a Unix system only has one process, called init, which has PID 1. That process is the direct or indirect ancestor of every other process executed on the system.
+
+is the first process started during booting of the computer system. Init is a daemon process that continues running until the system is shut down.
+
+It is the direct or indirect ancestor of all other processes and automatically adopts all orphaned processes. 
+
+Init is started by the kernel during the booting process; a kernel panic will occur if the kernel is unable to start it. Init is typically assigned process identifier 1.
+
+
+
+The process can have the following states: new, ready, running, waiting, terminated, and suspended.
+ A process can create other processes which are known as Child Processes.
+The process takes more time to terminate and it is isolated means it does not share the memory with any other process. 
+
+
+Thread: Thread is the segment of a process which means a process can have multiple threads and these multiple threads are contained within a process. A thread has three states: Running, Ready, and Blocked. 
+The thread takes less time to terminate as compared to the process but unlike the process, threads do not isolate. 
+
+
+
+The process is less efficient in terms of communication.	Thread is more efficient in terms of communication.
+
+
+The process has its own Process Control Block, Stack, and Address Space.	Thread has Parents’ PCB, its own Thread Control Block, and Stack and common Address space.
+
+
+
+
+Process Table and Process Control Block (PCB) :::
+
+While creating a process the operating system performs several operations
+To identify the processes, it assigns a process identification number (PID) to each process.
+As the operating system supports multi-programming, it needs to keep track of all the processes. 
+For this task, the process control block (PCB) is used to track the process’s execution status.
+
+Each block of memory contains information about the process state, program counter, stack pointer, status of opened files, scheduling algorithms, etc.
+
+All these information is required and must be saved when the process is switched from one state to another. When the process makes a transition from one state to another, the operating system must update information in the process’s PCB.
+
+
+
+
+A process control block (PCB) contains information about the process, i.e. registers, quantum, priority, etc. The process table is an array of PCB’s,
+that means logically contains a PCB for all of the current processes in the system.
+
+Pointer – It is a stack pointer which is required to be saved when the process is switched from one state to another to retain the current position of the process.
+Process state – It stores the respective state of the process.
+Process number – Every process is assigned with a unique id known as process ID or PID which stores the process identifier.
+Program counter – It stores the counter which contains the address of the next instruction that is to be executed for the process.
+Register – These are the CPU registers which includes: accumulator, base, registers and general purpose registers.
+Memory limits – This field contains the information about memory management system used by operating system. This may include the page tables, segment tables etc.
+Open files list – This information includes the list of files opened for a process.
+
+
+
+
+
+       pipe() creates a pipe, a unidirectional data channel that can be
+       used for interprocess communication.  The array pipefd is used to
+       return two file descriptors referring to the ends of the pipe.
+       pipefd[0] refers to the read end of the pipe.  pipefd[1] refers
+       to the write end of the pipe.  Data written to the write end of
+       the pipe is buffered by the kernel until it is read from the read
+       end of the pipe.  For further details
+
+
+The first integer in the array (element 0) is set up and opened for reading, while the second integer (element 1) is set up and opened for writing. Visually speaking, the output of fd1 becomes the input for fd0. Once again, all data traveling through the pipe moves through the kernel.

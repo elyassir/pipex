@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/02/18 09:50:08 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/02/18 09:50:47 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void	ft_child_child(t_pipex *pipex)
 		if (pipe(pipex->pipe2) == -1)
 			error_and_exit("Pipe Error");
 		get_cmd_child_2(pipex, i);
-		wait(NULL);
 		close(pipex->pipe[0]);
 		*pipex->pipe = *pipex->pipe2;
 		close(pipex->pipe2[1]);

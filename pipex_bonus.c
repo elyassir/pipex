@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/06 13:53:37 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/02/18 09:50:08 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	get_cmd_path(char **paths, char **command)
 		{
 			free(tmp);
 			free(command[0]);
-			free(path);
 			command[0] = path;
 			return ;
 		}

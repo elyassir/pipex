@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:14:47 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/02/18 09:50:47 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/02/18 09:51:11 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,7 @@ int	main(int argc, char *argv[], char *envp[])
 		get_cmd_child_3(&pipex);
 		close(pipex.pipe[0]);
 		while (wait(NULL) != -1)
-		{
-		}
+			;
 	}
 	else
 		write(2, "5 Args\n", 7);

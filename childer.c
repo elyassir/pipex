@@ -6,7 +6,7 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:28:29 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/01/05 12:47:17 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/02/18 09:55:27 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	get_cmd_child_1(t_pipex *pipex)
 				ft_free_all_(pipex->all_paths);
 		}
 		dup2(pipex->pipe[1], STDOUT_FILENO);
+		close(pipex->pipe[0]); // close to pass this test : ./pipex /dev/stdin cat ls /dev/stdout
 		dup2(pipex->infile, STDIN_FILENO);
 		execve(pipex->cmd1[0], pipex->cmd1, pipex->envp);
 		error_and_exit("Command Not Found");

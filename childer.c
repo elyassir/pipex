@@ -6,34 +6,12 @@
 /*   By: yel-mass <yel-mass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 14:28:29 by yel-mass          #+#    #+#             */
-/*   Updated: 2023/02/18 09:55:27 by yel-mass         ###   ########.fr       */
+/*   Updated: 2023/02/25 13:10:28 by yel-mass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	get_cmd_path(char **paths, char **command)
-{
-	char	*path;
-	char	*tmp;
-
-	if (command == NULL || paths == NULL)
-		return ;
-	while (*paths != NULL)
-	{
-		tmp = ft_strjoin(*paths, "/");
-		path = ft_strjoin(tmp, command[0]);
-		free(tmp);
-		if (access(path, F_OK | X_OK) == 0)
-		{
-			free(command[0]);
-			command[0] = path;
-			return ;
-		}
-		paths++;
-		free(path);
-	}
-}
+#include <stdio.h>
 
 void	ft_free_all_(char **strs)
 {
@@ -48,6 +26,36 @@ void	ft_free_all_(char **strs)
 	free(strs);
 	strs = NULL;
 }
+void	get_cmd_path(char **paths, char **command)
+{
+	char	*path;
+	char	*tmp;
+	char	**tmp2 = paths;
+
+	if (command == NULL || paths == NULL)
+		return ;
+	tmp = ft_strjoin("/", command[0]);
+	while (*paths != NULL)
+	{
+		path = ft_strjoin(*paths, tmp);
+		if (access(path, F_OK | X_OK) == 0)
+		{
+			free(tmp);
+			free(command[0]);
+			command[0] = path;
+			return ;
+		}
+		paths++;
+		free(path);
+	}
+	free(tmp);
+	ft_free_all_(tmp2);
+	write(2, "Command Not Found\n", 18);
+	exit(127);
+	return ;
+}
+
+
 
 char	**get_paths(char **envp)
 {
@@ -80,7 +88,8 @@ void	get_cmd_child_1(t_pipex *pipex)
 		close(pipex->pipe[0]); // close to pass this test : ./pipex /dev/stdin cat ls /dev/stdout
 		dup2(pipex->infile, STDIN_FILENO);
 		execve(pipex->cmd1[0], pipex->cmd1, pipex->envp);
-		error_and_exit("Command Not Found");
+		perror(pipex->cmd1[0]);
+		exit(127);
 	}
 	if (l < 0)
 		error_and_exit("fork Error");
@@ -97,14 +106,16 @@ void	get_cmd_child_2(t_pipex *pipex)
 		if (pipex->cmd2 != NULL || access(pipex->cmd2[0], F_OK | X_OK) != 0)
 		{
 			pipex->all_paths = get_paths(pipex->envp);
-			get_cmd_path(pipex->all_paths, pipex->cmd2);
 			if (pipex->all_paths != NULL)
-				ft_free_all_(pipex->all_paths);
+			{
+				get_cmd_path(pipex->all_paths, pipex->cmd2);
+			}
 		}
 		dup2(pipex->pipe[0], STDIN_FILENO);
 		dup2(pipex->outfile, STDOUT_FILENO);
 		execve(pipex->cmd2[0], pipex->cmd2, pipex->envp);
-		error_and_exit("Command Not Found");
+		perror(pipex->cmd2[0]);
+		exit(127);
 	}
 	if (l < 0)
 		error_and_exit("fork Error");
